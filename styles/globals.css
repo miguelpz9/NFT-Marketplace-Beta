@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0 px;
+  padding: 0 px;
+  box-sizing: border-box;
+  /* background-color: #09262c; */
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+* {
+  box-sizing: border-box;
+}
