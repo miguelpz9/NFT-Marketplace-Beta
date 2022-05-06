@@ -174,6 +174,7 @@ export default function Home() {
      *  map over items returned from smart contract and format
      *  them as well as fetch their token metadata
      */
+    try{
     const items = await Promise.all(
       data.map(async (i) => {
         const tokenUri = await contract.tokenURI(i.tokenId);
@@ -193,11 +194,17 @@ export default function Home() {
           description: meta.data.description,
           tokenUri,
         };
+        console.log("TokenID:" + i.tokenId);
         return item;
       })
     );
     setNfts(items);
     setLoadingState("loaded");
+    }
+    catch(e){
+      
+      console.log(e);
+    }
   }
 
   if (loadingState === "loaded" && !nfts.length)
@@ -216,7 +223,7 @@ export default function Home() {
                   <img src={nft.image} alt="rover" className="object-cover w-full h-full" />
                 </div>
                 <div className="p-4">
-                  <span className="text-2xl font-sans font-bold text-center">{nft.name}</span>
+                  <span className="text-2xl font-sans font-bold text-center">{nft.title}</span>
                   <h4 className="font-sans text-lg">{nft.description}</h4>
                   <h5 className="font-sans text-xl">By {nft.author}</h5>
                   <h3 className="font-sans text-2xl">Price: {nft.price} BNB ({nft.marketStatus})</h3>

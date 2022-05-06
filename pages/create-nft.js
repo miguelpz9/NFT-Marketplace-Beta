@@ -182,25 +182,68 @@ export default function CreateNft() {
     }
   }
 
+  async function onChangePreview(e) {
+    /* upload image to IPFS */
+    const file = e.target.files[0];
+    console.log(file);
+    const artworktype = formInput.artworktype;
+    console.log(artworktype);
+    try{
+      if(file.name.split('.').pop() != "png" && file.name.split('.').pop() != "jpg" && file.name.split('.').pop() != "jpeg"){
+        alert("You must select a .png, .jpg, .jpeg extension file");
+        document.getElementById('file').value = '';
+        return;
+      }
+    }catch (error){
+      console.log("Error uploading file: ", error);
+    }
+    try {
+      const added = await client.add(file, {
+        progress: (prog) => console.log(`received: ${prog}`),
+      });
+      const url = `ipfs://${added.path}`;
+      // set fileURL
+      console.log(url);
+      setFileUrlShow(`https://ipfs.infura.io/ipfs/${added.path}`)
+    } catch (error) {
+      console.log("Error uploading file: ", error);
+    }
+  }
+
   async function uploadToIPFS() {
     const { name, description, author, authorsocial, artworktype, royalties } = formInput;
     // destructing. getting value of name, desc and price from formInput.
-    if (!name || !description || !author || !authorsocial || !artworktype|| !fileUrl){
+    if (!name || !description || !author || !authorsocial || !artworktype|| !fileUrl || !fileUrlShow){
       alert("You need to cover all the fields!");
       return;
     };
     // if any of the valuable is empty return
 
     /* first, upload metadata to IPFS */
-    const data = JSON.stringify({
-      name,
-      description,
-      author,
-      authorsocial,
-      artworktype,
-      royalties,
-      image: fileUrl,
-    });
+    let data;
+    if(artworktype === "glb"){
+      data = JSON.stringify({
+        name,
+        description,
+        author,
+        authorsocial,
+        artworktype,
+        royalties,
+        file: fileUrl,
+        image: fileUrlShow,
+      });
+    } else{
+      data = JSON.stringify({
+        name,
+        description,
+        author,
+        authorsocial,
+        artworktype,
+        royalties,
+        image: fileUrlShow,
+      }); 
+    }
+    
     try {
       const added = await client.add(data);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
@@ -316,7 +359,16 @@ export default function CreateNft() {
           accept=".gif,.jpg,.svg,.png,.webp,.mp4,.mov,.webm,.glb"
           onChange={onChange}
         />
-        {fileUrlShow && <img className="rounded mt-4" width="350" src={fileUrlShow} />}
+        {formInput.artworktype === "glb" ? <div><h3>Select image to display:</h3><input
+          type="file"
+          name="Asset"
+          id="file"
+          className="my-4 input"
+          style={{ border: "none" }}
+          accept=".gif,.jpg,.svg,.png,.webp,.mp4,.mov,.webm,.glb"
+          onChange={onChangePreview}
+        /><img className="rounded mt-4" width="350" src={fileUrlShow} /></ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}
+        
         
         {currentAccount !== "" ? <button
           onClick={mintNFT}
