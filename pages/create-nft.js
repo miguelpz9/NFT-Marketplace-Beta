@@ -180,11 +180,9 @@ export default function CreateNft() {
         progress: (prog) => console.log(`received: ${prog}`),
       });
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      // set fileURL
-      setLocalFile(file);
-      console.log(url);
       setFileUrlShow(`https://ipfs.infura.io/ipfs/${added.path}`)
       setFileUrl(url);
+      console.log(fileUrl);
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
@@ -376,7 +374,7 @@ export default function CreateNft() {
           accept=".gif,.jpg,.svg,.png,.webp,.mp4,.mov,.webm,.glb"
           onChange={onChangePreview}
         />
-        {fileUrl !== null ? <Model file={localFile} /> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}</ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}
+       <img className="rounded mt-4" width="350" src={fileUrlShow} /></ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}
         
         
         {currentAccount !== "" ? <button
