@@ -14,6 +14,7 @@ const Model = dynamic(
 )
 
 export default function CreateNft() {
+  const [localFile, setLocalFile] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
   const [fileUrlShow, setFileUrlShow] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -180,6 +181,7 @@ export default function CreateNft() {
       });
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
       // set fileURL
+      setLocalFile(file);
       console.log(url);
       setFileUrlShow(`https://ipfs.infura.io/ipfs/${added.path}`)
       setFileUrl(url);
@@ -374,7 +376,7 @@ export default function CreateNft() {
           accept=".gif,.jpg,.svg,.png,.webp,.mp4,.mov,.webm,.glb"
           onChange={onChangePreview}
         />
-        {fileUrl !== null ? <Model file={fileUrl} /> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}</ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}
+        {fileUrl !== null ? <Model file={localFile} /> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}</ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}
         
         
         {currentAccount !== "" ? <button
