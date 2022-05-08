@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/model-viewer": "^1.11.1",
     "axios": "^0.26.1",
     "daisyui": "^2.14.2",
     "dotenv": "^16.0.0",

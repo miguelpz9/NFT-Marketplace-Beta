@@ -2,10 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { providers, ethers, BigNumber } from "ethers";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useRouter } from "next/router";
+import dynamic from 'next/dynamic';
 import Web3Modal from "web3modal";
 import { abi, MARKET_PLACE_ADDRESS } from "../constants";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
+
+const Model = dynamic(
+  () => import('../components/Model'),
+  { ssr: false }
+)
 
 export default function CreateNft() {
   const [fileUrl, setFileUrl] = useState(null);
@@ -172,7 +178,7 @@ export default function CreateNft() {
       const added = await client.add(file, {
         progress: (prog) => console.log(`received: ${prog}`),
       });
-      const url = `ipfs://${added.path}`;
+      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
       // set fileURL
       console.log(url);
       setFileUrlShow(`https://ipfs.infura.io/ipfs/${added.path}`)
@@ -367,7 +373,8 @@ export default function CreateNft() {
           style={{ border: "none" }}
           accept=".gif,.jpg,.svg,.png,.webp,.mp4,.mov,.webm,.glb"
           onChange={onChangePreview}
-        /><img className="rounded mt-4" width="350" src={fileUrlShow} /></ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}
+        />
+        {fileUrl !== null ? <Model file={fileUrl} /> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}</ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}
         
         
         {currentAccount !== "" ? <button

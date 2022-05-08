@@ -169,14 +169,21 @@ export default function Home() {
     //const provider = new ethers.providers.Web3Provider(ethereum);
     const contract = new ethers.Contract(MARKET_PLACE_ADDRESS, abi, provider);
     const data = await contract.fetchMarketItems();
+    console.log(data);
 
     /*
      *  map over items returned from smart contract and format
      *  them as well as fetch their token metadata
      */
     try{
-    const items = await Promise.all(
+    let items = await Promise.all(
       data.map(async (i) => {
+        if(i.tokenId == 0){
+          return;
+        }
+        if (i.listed == false) {
+          return;
+        }
         const tokenUri = await contract.tokenURI(i.tokenId);
         const meta = await axios.get(tokenUri);
         // returns the price, value in ETHER. i.e 0.01 ether
@@ -198,11 +205,14 @@ export default function Home() {
         return item;
       })
     );
+      items = items.filter(function (element) {
+        return element !== undefined;
+      });
+    console.log(items);
     setNfts(items);
     setLoadingState("loaded");
     }
     catch(e){
-      
       console.log(e);
     }
   }
