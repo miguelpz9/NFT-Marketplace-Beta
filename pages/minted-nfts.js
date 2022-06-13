@@ -50,6 +50,7 @@ export default function MyAssets() {
           image: meta.data.image,
           name: meta.data.name,
           description: meta.data.description,
+          currency: i.isBusd ? "BUSD" : "BNB",
           tokenURI,
         };
         return item;
@@ -140,7 +141,7 @@ export default function MyAssets() {
                   <span className="text-2xl font-sans font-bold text-center">{nft.name}</span>
                   <h4 className="font-sans text-lg">{nft.description}</h4>
                   <h5 className="font-sans text-xl">Created By: {nft.creator} ({nft.author})</h5>
-                  <h3 className="font-sans text-2xl">Price bought: {nft.price} BNB ({nft.marketStatus})</h3>
+                  <h3 className="font-sans text-2xl">Price bought: {nft.price} {nft.currency} ({nft.marketStatus})</h3>
                 </div>
               </div>
           ))}

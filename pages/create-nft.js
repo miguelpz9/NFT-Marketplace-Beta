@@ -116,7 +116,7 @@ export default function CreateNft() {
         const signer = provider.getSigner();
         const contract = new ethers.Contract(MARKET_PLACE_ADDRESS, abi, signer);
 
-        let tx = await contract.createToken(url, 0, formInput.royalties);
+        let tx = await contract.createToken(url, 0, formInput.royalties, false);
         setLoading(true)
 
         await tx.wait();
@@ -195,8 +195,8 @@ export default function CreateNft() {
     const artworktype = formInput.artworktype;
     console.log(artworktype);
     try{
-      if(file.name.split('.').pop() != "png" && file.name.split('.').pop() != "jpg" && file.name.split('.').pop() != "jpeg"){
-        alert("You must select a .png, .jpg, .jpeg extension file");
+      if(file.name.split('.').pop() != "png" && file.name.split('.').pop() != "jpg" && file.name.split('.').pop() != "jpeg" && file.name.split('.').pop() != "gif"){
+        alert("You must select a .png, .jpg, .jpeg, .gif extension file");
         document.getElementById('file').value = '';
         return;
       }
@@ -354,6 +354,7 @@ export default function CreateNft() {
           <option value="mov">MOV</option>
           <option value="webm">WEBM</option>
           <option value="glb">GLB</option>
+          <option value="gif">GIF</option>
         </select>
 
         <input
@@ -371,7 +372,7 @@ export default function CreateNft() {
           id="file"
           className="my-4 input"
           style={{ border: "none" }}
-          accept=".gif,.jpg,.svg,.png,.webp,.mp4,.mov,.webm,.glb"
+          accept=".gif,.jpg,.svg,.png,.webp,.mp4,.mov,.webm,.glb,.gif"
           onChange={onChangePreview}
         />
        <img className="rounded mt-4" width="350" src={fileUrlShow} /></ div> : <img className="rounded mt-4" width="350" src={fileUrlShow} />}

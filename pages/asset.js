@@ -115,7 +115,7 @@ const Asset = () => {
             <h5 className="font-sans text-xl">Owner: {nft.owner}</h5>
             <h5 className="font-sans text-xl">Token Id: {nft.tokenId}</h5>
             <h5 className="font-sans text-xl">Smart Contract: {MARKET_PLACE_ADDRESS}</h5>
-            <h3 className="font-sans text-2xl">Price: {nft.price} BNB ({nft.marketStatus})</h3>
+            <h3 className="font-sans text-2xl">Price: {nft.price} {nft.currency} ({nft.marketStatus})</h3>
             <button
               onClick={buyNft}
               className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-12 rounded"

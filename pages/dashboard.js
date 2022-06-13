@@ -36,6 +36,7 @@ export default function CreatorDashboard() {
           owner: i.owner,
           image: meta.data.image,
           name: meta.data.name,
+          currency: i.isBusd ? "BUSD" : "BNB",
           description: meta.data.description,
         };
         return item;
@@ -68,7 +69,7 @@ export default function CreatorDashboard() {
               </div>
               <div className="p-4 bg-black">
                 <p className="text-2xl font-bold text-white">
-                  Price - {nft.price} Matic
+                  Price - {nft.price} {nft.currency}
                 </p>
               </div>
             </div>

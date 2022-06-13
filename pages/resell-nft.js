@@ -6,7 +6,7 @@ import Web3Modal from "web3modal";
 import { abi, MARKET_PLACE_ADDRESS } from "../constants";
 
 export default function ResellNFT() {
-  const [formInput, updateFormInput] = useState({ price: "", image: "" });
+  const [formInput, updateFormInput] = useState({ price: "", image: "", currency: "" });
   const [nfts, setNfts] = useState({ name: "", description: "" });
   const router = useRouter();
   const { id, tokenURI } = router.query;
@@ -40,12 +40,13 @@ export default function ResellNFT() {
     const signer = provider.getSigner();
 
     const priceFormatted = ethers.utils.parseUnits(formInput.price, "ether");
+    const busdSelected = formInput.currency === "busd" ? true : false;
     let contract = new ethers.Contract(MARKET_PLACE_ADDRESS, abi, signer);
 
     let listingPrice = await contract.getListingPrice();
     listingPrice = listingPrice.toString();
     // send transcation to place NFT in marketplace. Seller send metadata of NFT. Spend Gasfee along with listingPrice.
-    let transaction = await contract.resellToken(id, priceFormatted, {
+    let transaction = await contract.resellToken(id, priceFormatted, busdSelected, {
       value: listingPrice,
     });
     await transaction.wait();
@@ -56,6 +57,16 @@ export default function ResellNFT() {
   return (
     <div className="flex justify-center py-40">
       <div className="w-1/2 flex flex-col pb-12">
+      <select
+         name="Currency"
+          id="cars"
+          onChange={(e) =>
+            updateFormInput({ ...formInput, currency: e.target.value })
+          }
+        >
+          <option value="busd">BUSD</option>
+          <option value="bnb">BNB</option>
+        </select>
         <input
           placeholder="Asset Price in Eth"
           className="mt-2 border rounded p-4"

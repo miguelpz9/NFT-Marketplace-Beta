@@ -7,7 +7,7 @@ import { abi, MARKET_PLACE_ADDRESS } from "../constants";
 
 export default function MyAssets() {
   const [currentAccount, setCurrentAccount] = useState("");
-  const [formInput, updateFormInput] = useState({ price: "", image: "" });
+  const [formInput, updateFormInput] = useState({ price: "", image: "", currency: "" });
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
   const router = useRouter();
@@ -51,6 +51,7 @@ export default function MyAssets() {
           image: meta.data.image,
           name: meta.data.name,
           description: meta.data.description,
+          currency: i.isBusd ? "BUSD" : "BNB",
           tokenURI,
         };
         return item;
@@ -79,7 +80,8 @@ export default function MyAssets() {
         const priceFormatted = ethers.utils.parseUnits(formInput.price, "ether");
         let listingPrice = await contract.getListingPrice();
         listingPrice = listingPrice.toString();
-        let transaction = await contract.listToken(nft.tokenId, priceFormatted, {
+        const isBusd = formInput.currency === "busd" ? true : false;
+        let transaction = await contract.listToken(nft.tokenId, priceFormatted, isBusd,{
           value: listingPrice,
         });
         await transaction.wait();
@@ -143,10 +145,20 @@ export default function MyAssets() {
                   <span className="text-2xl font-sans font-bold text-center">{nft.name}</span>
                   <h4 className="font-sans text-lg">{nft.description}</h4>
                   <h5 className="font-sans text-xl">Created By: {nft.creator} ({nft.author})</h5>
-                  <h3 className="font-sans text-2xl">Price bought: {nft.price} BNB ({nft.isListed ? "On sale" : "Not listed"})</h3>
+                  <h3 className="font-sans text-2xl">Price bought: {nft.price} {nft.currency} ({nft.isListed ? "On sale" : "Not listed"})</h3>
                 </div>
+                <select
+                  name="Currency"
+                    id="cars"
+                    onChange={(e) =>
+                      updateFormInput({ ...formInput, currency: e.target.value })
+                    }
+                  >
+                    <option value="busd">BUSD</option>
+                    <option value="bnb">BNB</option>
+                  </select>
                 <input
-                  placeholder="Listing price in BNB"
+                  placeholder="Listing price"
                   className="mt-2 border w-full rounded p-4"
                   onChange={(e) =>
                     updateFormInput({ ...formInput, price: e.target.value })
