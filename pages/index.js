@@ -199,9 +199,10 @@ export default function Home() {
           image: meta.data.image,
           name: meta.data.name,
           description: meta.data.description,
-          currency: i.isBusd ? "BUSD" : "BNB",
           tokenUri,
+          isBusd: i.isBUSD,
         };
+        console.log("isBusd:" + i.isBUSD);
         console.log("TokenID:" + i.tokenId);
         return item;
       })
@@ -237,7 +238,7 @@ export default function Home() {
                   <span className="text-2xl font-sans font-bold text-center">{nft.title}</span>
                   <h4 className="font-sans text-lg">{nft.description}</h4>
                   <h5 className="font-sans text-xl">By {nft.author}</h5>
-                  <h3 className="font-sans text-2xl">Price: {nft.price} {nft.currency} ({nft.marketStatus})</h3>
+                  <h3 className="font-sans text-2xl">Price: {nft.price} {nft.isBusd ? "BUSD" : "BNB"} ({nft.marketStatus})</h3>
                 </div>
               </div>
             </Link>

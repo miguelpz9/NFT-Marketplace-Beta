@@ -1,6 +1,7 @@
 import { useRouter, useContext } from 'next/router';
-import { abi, MARKET_PLACE_ADDRESS } from "../constants";
+import { abi, MARKET_PLACE_ADDRESS, BUSD_ADDRESS, busd_abi } from "../constants";
 import { ethers } from "ethers";
+import { useEffect, useState } from "react";
 
 const Asset = () => {
   const { query } = useRouter();
@@ -8,7 +9,7 @@ const Asset = () => {
   if (typeof query.NFT !== 'undefined') {
     nft = JSON.parse(query.NFT);
   }
-  
+  const [isAproved, setIsAproved] = useState(false);
   
   async function buyNft() {
     const {ethereum} = window;
@@ -27,11 +28,50 @@ const Asset = () => {
         /* user will be prompted to pay the asking price to complete the transaction */
 
         // parseUnits("1.0", "ether") === { BigNumber: "1000000000000000000" }
-        const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+        let price;
+        if(nft.isBusd){
+          price = 0;
+        } else{
+          price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+        }
         const transaction = await contract.buyToken(nft.tokenId, {
           value: price,
         });
         await transaction.wait();      
+      }
+
+
+    } catch(e){
+      console.log(e)
+    }
+  }
+
+  async function approveBUSD() {
+    const {ethereum} = window;
+    try{
+      if(ethereum){
+        connectWallet();
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+         BUSD_ADDRESS,
+           busd_abi,
+           signer
+         );
+
+        // // pop wallet to pay gas:
+        // /* user will be prompted to pay the asking price to complete the transaction */
+
+        // // parseUnits("1.0", "ether") === { BigNumber: "1000000000000000000" }
+        // let price;
+        // if(nft.isBusd){
+        //   price = 0;
+        // } else{
+        //   price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+        // }
+        const transaction = await contract.approve(MARKET_PLACE_ADDRESS, ethers.utils.parseUnits(nft.price.toString(), "ether"));
+        await transaction.wait();      
+        setIsAproved(true);
       }
 
 
@@ -115,13 +155,18 @@ const Asset = () => {
             <h5 className="font-sans text-xl">Owner: {nft.owner}</h5>
             <h5 className="font-sans text-xl">Token Id: {nft.tokenId}</h5>
             <h5 className="font-sans text-xl">Smart Contract: {MARKET_PLACE_ADDRESS}</h5>
-            <h3 className="font-sans text-2xl">Price: {nft.price} {nft.currency} ({nft.marketStatus})</h3>
-            <button
+            <h3 className="font-sans text-2xl">Price: {nft.price} {nft.isBusd ? "BUSD" : "BNB"} ({nft.marketStatus})</h3>
+            {nft.isBusd ? <button
+              onClick={isAproved ? buyNft : approveBUSD}
+              className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-12 rounded"
+            >
+              {isAproved ? "Buy NFT" : "Aprove BUSD"}
+            </button> : <button
               onClick={buyNft}
               className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-12 rounded"
             >
               Buy
-            </button>
+            </button>}
         </div>
       </div>
       

@@ -80,7 +80,14 @@ export default function MyAssets() {
         const priceFormatted = ethers.utils.parseUnits(formInput.price, "ether");
         let listingPrice = await contract.getListingPrice();
         listingPrice = listingPrice.toString();
-        const isBusd = formInput.currency === "busd" ? true : false;
+        let isBusd;
+        if(formInput.currency === "busd"){
+          isBusd = true;
+        }else{
+          isBusd = false;
+        }
+        console.log(formInput.currency);
+        console.log(isBusd);
         let transaction = await contract.listToken(nft.tokenId, priceFormatted, isBusd,{
           value: listingPrice,
         });
@@ -154,8 +161,8 @@ export default function MyAssets() {
                       updateFormInput({ ...formInput, currency: e.target.value })
                     }
                   >
-                    <option value="busd">BUSD</option>
                     <option value="bnb">BNB</option>
+                    <option value="busd">BUSD</option>
                   </select>
                 <input
                   placeholder="Listing price"
